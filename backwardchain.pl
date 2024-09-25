@@ -1,32 +1,14 @@
-% Define facts and rules
-fact(has_fur, dog).
-fact(has_tail, dog).
-fact(has_fur, cat).
-fact(has_tail, cat).
-fact(has_feathers, bird).
-rule(mammal, X) :-
-    fact(has_fur, X),
-    fact(has_tail, X).
-rule(animals, X) :-
-    fact(has_fur, X).
-rule(animals, X) :-
-    fact(has_feathers, X).
+% Facts: defining parent relationships
+parent(john, mary).
+parent(mary, alice).
+parent(alice, tom).
 
-% Predicate to check if a goal can be entailed from the knowledge base
-entails(Goal, _) :- fact(Goal, _).
-entails(Goal, Derived) :-
-    rule(Consequent, Goal),
-    \+ member(Consequent, Derived), % Check if not already derived
-    entails(Consequent, [Goal | Derived]).
+% Rule to define grandparent relationship based on parent relationship
+grandparent(X, Z) :- 
+    parent(X, Y),   % X is a parent of Y
+    parent(Y, Z).   % Y is a parent of Z
 
-% Predicate to use backward chaining to prove a goal
-prove(Goal) :-
-    entails(Goal, []),
-    write('Goal '), write(Goal), write(' is proved.'), nl.
-
-prove(Goal) :-
-    \+ entails(Goal, []),
-    write('Goal '), write(Goal), write(' cannot be proved.'), nl.
-
-% Example queries
-?- prove(mammal, dog).
+% Example Queries:
+% Query to find the grandparents of someone:
+% ?- grandparent(X, tom).      % Who are the grandparents of Tom?
+% ?- grandparent(john, Who).   % Who is John's grandchild?
